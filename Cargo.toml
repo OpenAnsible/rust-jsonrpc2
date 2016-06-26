@@ -1,0 +1,18 @@
+[package]
+name     = "jsonrpc2"
+version  = "0.1.0"
+authors  = ["Luo <gnulinux@126.com>"]
+keywords = [ "protocol", "json", "jsonrpc", "jsonrpc2" ]
+
+homepage    = "https://github.com/OpenAnsible/rust-jsonrpc2"
+description = "JsonRPC2 Library"
+repository  = "https://github.com/OpenAnsible/rust-jsonrpc2"
+license     = "GPL-3.0"
+readme      = "README.rst"
+
+[lib]
+name = "jsonrpc2"
+path = "src/lib.rs"
+
+[dependencies]
+rustc-serialize = "0.3"

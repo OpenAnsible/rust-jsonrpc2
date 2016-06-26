@@ -10,6 +10,8 @@ Rust JsonRPC Library
 
 Rust JsonRpc Library.
 
+`jsonrpc2 <https://crates.io/crates/jsonrpc2>`_ on `crates.io` .
+
 
 用例
 -------

@@ -26,7 +26,10 @@ Rust JsonRpc Library.
 
     extern crate jsonrpc2;
 
-    use jsonrpc2::{JsonRpc, Request, Response, Error, Json, ToJson, RpcResult};
+    use jsonrpc2::{ 
+        JsonRpc, RpcResult, Request, Response, 
+        Error as RpcError, Json, ToJson 
+    };
 
     fn hello(params: &Option<Json>) -> RpcResult {
         Ok("Hello World".to_json())
@@ -52,18 +55,25 @@ With  Hyper:
 
     use std::io::{ copy, Read, Write };
     use std::sync::Arc;
-    use std::env;
+    use std::str::FromStr;
 
-    use hyper::server::{ Server, Request as HyperRequest, Response as HyperResponse, HyperHandler };
+    use hyper::server::{ 
+        Server, Request as HyperRequest, 
+        Response as HyperResponse, 
+        Handler as HyperHandler
+    };
     use hyper::method::Method::{ Get, Put, Post };
     use hyper::status::StatusCode; // { Ok, BadRequest, NotFound, MethodNotAllowed };
     
-    use jsonrpc2::{JsonRpc, Request, Response, Error, Json, ToJson, RpcResult};
+    use jsonrpc2::{ 
+        JsonRpc, RpcResult, Request, Response, 
+        Error as RpcError, Json, ToJson 
+    };
 
     struct MyHandler {
         rpc: Arc<JsonRpc>
     }
-    impl Handler for MyHandler {
+    impl HyperHandler for MyHandler {
         fn handle(&self, mut req: HyperRequest, mut res: HyperResponse) {
             match req.method {
                 Post | Put => {
@@ -71,7 +81,7 @@ With  Hyper:
                     match req.read_to_string(&mut body){
                         Ok(body_length) => {
                             let mut res = &mut res.start().unwrap();
-                            match RpcRequest::new(&body) {
+                            match Request::from_str(&body) {
                                 Ok(rpc_request) => {
                                     let response_content = self.rpc.call(&rpc_request).to_json().to_string();
                                     res.write(response_content.as_bytes()).unwrap();
@@ -104,9 +114,6 @@ With  Hyper:
     }
 
     fn main(){
-        let args: Vec<String> = env::args().collect();
-        println!("Args: {:?}", args);
-
         let mut rpc = JsonRpc::new();
         rpc.register("hello", Box::new(hello));
 

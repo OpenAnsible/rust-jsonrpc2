@@ -45,6 +45,14 @@ impl ToString for Request {
 }
 
 impl Request {
+    pub fn new(jsonrpc: &str, method: &str, params: Option<Json>, id: Option<i64>) -> Request {
+        Request{
+            jsonrpc: jsonrpc.to_string(),
+            method : method.to_string(),
+            params : params,
+            id     : id
+        }
+    }
     pub fn parse(j: Json) -> Result<Request, Error> {
         if !j.is_object() {
             return Err(Error::ParseError);
@@ -73,7 +81,7 @@ impl Request {
             id     : id.ok().unwrap()
         })
     }
-    fn _parse_version (obj: &Object) -> Result<String, ()> {
+    pub fn _parse_version (obj: &Object) -> Result<String, ()> {
         match obj.get("jsonrpc") {
             Some(version) => {
                 match version.as_string().unwrap() {
@@ -85,7 +93,7 @@ impl Request {
             None => Err(())
         }
     }
-    fn _parse_method (obj: &Object) -> Result<String, ()> {
+    pub fn _parse_method (obj: &Object) -> Result<String, ()> {
         match obj.get("method") {
             Some(method) => {
                 match method.is_string() {
@@ -96,7 +104,7 @@ impl Request {
             None => Err(())
         }
     }
-    fn _parse_params (obj: &Object) -> Result<Option<Json>, ()> {
+    pub fn _parse_params (obj: &Object) -> Result<Option<Json>, ()> {
         match obj.get("params") {
             Some(params) => {
                 if params.is_array() || params.is_object() {
@@ -110,7 +118,7 @@ impl Request {
             None => Err(())
         }
     }
-    fn _parse_id (obj: &Object) -> Result<Option<i64>, ()> {
+    pub fn _parse_id (obj: &Object) -> Result<Option<i64>, ()> {
         match obj.get("id") {
             Some(id) => {
                 // i.is_number() || i.is_u64()

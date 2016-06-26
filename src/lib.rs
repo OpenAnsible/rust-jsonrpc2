@@ -10,10 +10,12 @@ pub use rustc_serialize::json::{Json, ToJson, Object};
 mod error;
 mod request;
 mod response;
+mod client;
 
 pub use error::Error;
 pub use request::Request;
 pub use response::Response;
+pub use client::Client;
 
 pub type RpcResult = Result<Json, &'static str>;
 pub type RpcHandle = Box<Fn(&Option<Json>)-> RpcResult>;
@@ -50,7 +52,7 @@ impl JsonRpc {
                         Response::Error{
                             jsonrpc: request.jsonrpc().clone(),
                             // Error::InternalError
-                            error  : Error::ServerError{code: -32000, message: err, data: None},
+                            error  : Error::ServerError(-32000, err.to_string(), None),
                             id     : request.id().clone()
                         }
                     }
@@ -66,7 +68,7 @@ impl JsonRpc {
 unsafe impl Send for JsonRpc { }
 unsafe impl Sync for JsonRpc { }
 
-
+#[cfg(test)]
 mod tests {
     #[warn(non_shorthand_field_patterns)]
     #[warn(unused_imports)]
@@ -138,6 +140,17 @@ mod tests {
         let res  = rpc.call(&req).to_string();
         assert_eq!(&res, "{\"id\":3,\"jsonrpc\":\"2.0\",\"result\":\"imkey:imvalue\"}");
     }
+    // #[test]
+    fn main (){
+        let client = Client::new("http://127.0.0.1").unwrap();
+        let method = "ice";
+        let params = vec![1,2,3,4];
+        let id     = 1i64;
+        match client.call("ice", &Some(params.to_json()), &id ) {
+            Ok(result) => println!("Response: {:?}", result),
+            Err(_)     => println!("请求出错啦...")
+        }
 
+    }
 }
 

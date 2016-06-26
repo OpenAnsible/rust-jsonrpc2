@@ -1,6 +1,6 @@
 [package]
 name     = "jsonrpc2"
-version  = "0.1.0"
+version  = "0.1.1"
 authors  = ["Luo <gnulinux@126.com>"]
 keywords = [ "protocol", "json", "jsonrpc", "jsonrpc2" ]
 

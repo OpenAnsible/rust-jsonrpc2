@@ -72,7 +72,7 @@ unsafe impl Sync for JsonRpc { }
 mod tests {
     #[warn(non_shorthand_field_patterns)]
     #[warn(unused_imports)]
-    use super::{JsonRpc, Error, Request, Response, Json, ToJson, RpcResult};
+    use super::{JsonRpc, Error, Request, Response, Json, ToJson, RpcResult, Client};
     use std::str::FromStr;
     use std::string::ToString;
 
@@ -141,7 +141,7 @@ mod tests {
         assert_eq!(&res, "{\"id\":3,\"jsonrpc\":\"2.0\",\"result\":\"imkey:imvalue\"}");
     }
     // #[test]
-    fn main (){
+    fn test_client(){
         let client = Client::new("http://127.0.0.1").unwrap();
         let method = "ice";
         let params = vec![1,2,3,4];
